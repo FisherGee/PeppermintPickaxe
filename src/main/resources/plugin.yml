@@ -1,0 +1,9 @@
+name: PeppermintPickaxe
+version: 1.0
+main: me.fishergee.peppermintpickaxe.Core
+authors: [FisherGee]
+description: Cool christmas plugin.
+commands:
+  peppermint:
+    description: Command peppermint pick
+    usage: /peppermint

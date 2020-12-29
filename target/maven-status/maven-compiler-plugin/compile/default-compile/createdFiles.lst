@@ -1,0 +1,5 @@
+me\fishergee\peppermintpickaxe\Core.class
+me\fishergee\peppermintpickaxe\managers\PlayerTaskManager.class
+me\fishergee\peppermintpickaxe\tasks\PlayerTask.class
+me\fishergee\peppermintpickaxe\cmds\PeppermintCmd.class
+me\fishergee\peppermintpickaxe\listeners\PlayerInteractListener.class

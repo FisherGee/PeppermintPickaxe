@@ -37,8 +37,9 @@ public class PlayerTaskManager {
     }
 
     public boolean isPlayerCooldown(Player p) {
+        System.out.println(playersOnCooldown.size());
         for(PlayerTask pt : playersOnCooldown){
-            if(pt.getPlayer() == p){
+            if(pt.getPlayerUUID().equals(p.getUniqueId())){
                 return true;
             }
         }

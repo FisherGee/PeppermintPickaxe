@@ -8,45 +8,39 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.UUID;
+
 public class PlayerTask{
 
+    private UUID playerUUID;
     private Player player;
     private Plugin plugin;
-    private boolean isCooldown;
     private PlayerTaskManager playerTaskManager;
 
-    public PlayerTask(Player player, PlayerTaskManager playerTaskManager){
+    /*
+    Player object goes null after player leaves.
+     */
+    public PlayerTask(Player player,  PlayerTaskManager playerTaskManager){
+        this.playerUUID = player.getUniqueId();
         this.player = player;
         this.plugin = Core.plugin;
-        isCooldown = false;
         this.playerTaskManager = playerTaskManager;
     }
 
-    public Player getPlayer(){
-        return player;
+    public UUID getPlayerUUID(){
+        return playerUUID;
     }
 
-    public boolean start(){
-        if (player.hasPotionEffect(PotionEffectType.FAST_DIGGING)){
-           return false;
-        }
+    public void start(){
+        player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 120, 3));
 
-        if (isCooldown == false) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 120, 3));
-            isCooldown = true;
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
 
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                
-                //when the potion effect goes off.
-                isCooldown = false;
-                playerTaskManager.removePlayer(this);
+            //when the potion effect goes off.
+            playerTaskManager.removePlayer(this);
 
-                player.sendMessage(ChatColor.GOLD + "Your peppermint effect has ended.");
-            }, 20 * 100);
+            player.sendMessage(ChatColor.GOLD + "Your peppermint effect has ended.");
+        }, 20 * 121);
 
-            return true;
-        }
-
-        return false;
     }
 }

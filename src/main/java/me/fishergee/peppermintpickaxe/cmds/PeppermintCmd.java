@@ -27,15 +27,17 @@ public class PeppermintCmd implements CommandExecutor {
                 ItemMeta im = pickaxe.getItemMeta();
 
                 im.addEnchant(Enchantment.DIG_SPEED, 7, true);
-                im.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&clPEPPERMINT &f&lPICKAXE"));
+                im.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&c&lPEPPERMINT &f&lPICKAXE"));
 
-                NBTItem peppermintNBT = new NBTItem(pickaxe);
+                pickaxe.setItemMeta(im);
+
+                NBTItem peppermintNBT = new NBTItem(pickaxe, true);
                 peppermintNBT.setString("id", "peppermint");
 
                 if(p.getInventory().firstEmpty() == -1){
-                    p.getWorld().dropItem(p.getLocation(), peppermintNBT.getItem());
+                    p.getWorld().dropItem(p.getLocation(), pickaxe);
                 }else{
-                    p.getInventory().addItem(peppermintNBT.getItem());
+                    p.getInventory().addItem(pickaxe);
                 }
             }
         }

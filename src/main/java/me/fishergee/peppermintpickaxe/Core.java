@@ -16,6 +16,9 @@ public class Core extends JavaPlugin {
     public void onEnable(){
         this.plugin = this;
         playerTaskManager = new PlayerTaskManager();
+
+        registerListeners();
+        registerCmds();
     }
 
     private void registerListeners(){

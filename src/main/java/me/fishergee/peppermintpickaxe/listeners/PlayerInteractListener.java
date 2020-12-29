@@ -1,20 +1,24 @@
 package me.fishergee.peppermintpickaxe.listeners;
 
 import de.tr7zw.nbtapi.NBTCompound;
+import de.tr7zw.nbtapi.NBTEntity;
 import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBTTileEntity;
 import me.fishergee.peppermintpickaxe.managers.PlayerTaskManager;
 import me.fishergee.peppermintpickaxe.tasks.PlayerTask;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PlayerInteractListener implements Listener {
     
@@ -28,27 +32,31 @@ public class PlayerInteractListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent e){
         Action a = e.getAction();
 
-        if(!a.equals(Action.RIGHT_CLICK_BLOCK) || !a.equals(Action.RIGHT_CLICK_AIR)){
+        if(!a.equals(Action.RIGHT_CLICK_BLOCK) && !a.equals(Action.RIGHT_CLICK_AIR)){
             return;
         }
 
-        ItemStack itemClicked = e.getItem();
-
-        NBTCompound nbtCompound = NBTItem.convertItemtoNBT(itemClicked);
-
-        if(nbtCompound.hasKey("id")) {
-            if(!nbtCompound.getString("id").equalsIgnoreCase("peppermint")) {
-                return;
-            }
-        } else {
+        if(e.getHand() != EquipmentSlot.HAND){
             return;
         }
+
+        ItemStack itemClicked = e.getPlayer().getInventory().getItemInMainHand();
+
+        NBTItem nbtItem = new NBTItem(itemClicked);
+
+        if(!nbtItem.getString("id").equals("peppermint")){
+            return;
+        }
+
 
         Player p = e.getPlayer();
         int sugarAmount = 0;
 
-        
         for (ItemStack item : p.getInventory()) {
+            if(item == null){
+                continue;
+            }
+
             if (item.getType().equals(Material.SUGAR)) {
                 sugarAmount += item.getAmount();
             }
@@ -60,12 +68,14 @@ public class PlayerInteractListener implements Listener {
                 return;
             }
             else{
-                p.getInventory().remove(new ItemStack(Material.SUGAR, 16));
                 PlayerTask playerTask = new PlayerTask(p, playerTaskManager);
-                
-                playerTaskManager.addPlayer(playerTask);
+
                 playerTask.start();
-                
+
+                p.getInventory().removeItem(new ItemStack(Material.SUGAR, 16));
+
+                playerTaskManager.addPlayer(playerTask);
+
                 p.sendMessage(ChatColor.GREEN + "You have activated the peppermint effect!");
                 return;
             }
