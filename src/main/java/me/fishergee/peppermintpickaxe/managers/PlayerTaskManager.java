@@ -1,28 +1,46 @@
 package me.fishergee.peppermintpickaxe.managers;
 
+import me.fishergee.peppermintpickaxe.tasks.PlayerTask;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class PlayerTaskManager {
 
-    HashSet<Player> playersOnCooldown;
+    Set<PlayerTask> playersOnCooldown;
 
-    public PlayerTaskManager(){
-        playersOnCooldown = new HashSet<Player>();
+    public PlayerTaskManager() {
+        playersOnCooldown = new HashSet<PlayerTask>();
     }
 
-    public void addPlayer(Player p){
-        playersOnCooldown.add(p);
-    }
-
-    public void removePlayer(Player p){
-        playersOnCooldown.remove(p);
-    }
-
-    public boolean isPlayerCooldown(Player p){
-        if(playersOnCooldown.contains(p)){
+    public boolean addPlayer(PlayerTask p) {
+        if (!playerExists(p)) {
+            playersOnCooldown.add(p);
             return true;
+        }
+
+        return false;
+    }
+
+    public boolean removePlayer(PlayerTask p) {
+        if (playerExists(p)) {
+            playersOnCooldown.remove(p);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean playerExists(PlayerTask p) {
+        return playersOnCooldown.contains(p);
+    }
+
+    public boolean isPlayerCooldown(Player p) {
+        for(PlayerTask pt : playersOnCooldown){
+            if(pt.getPlayer() == p){
+                return true;
+            }
         }
         return false;
     }

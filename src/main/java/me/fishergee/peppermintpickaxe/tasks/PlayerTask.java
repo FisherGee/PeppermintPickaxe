@@ -1,8 +1,8 @@
 package me.fishergee.peppermintpickaxe.tasks;
 
 import me.fishergee.peppermintpickaxe.Core;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import me.fishergee.peppermintpickaxe.managers.PlayerTaskManager;
+import net.md_5.bungee.api.ChatColor;import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -10,33 +10,43 @@ import org.bukkit.potion.PotionEffectType;
 
 public class PlayerTask{
 
-    Player player;
-    Plugin plugin;
-    boolean cooldown;
+    private Player player;
+    private Plugin plugin;
+    private boolean isCooldown;
+    private PlayerTaskManager playerTaskManager;
 
-    public PlayerTask(Player player){
+    public PlayerTask(Player player, PlayerTaskManager playerTaskManager){
         this.player = player;
         this.plugin = Core.plugin;
-        cooldown = false;
+        isCooldown = false;
+        this.playerTaskManager = playerTaskManager;
     }
 
-    public void start(){
-        if(cooldown == false){
+    public Player getPlayer(){
+        return player;
+    }
+
+    public boolean start(){
+        if (player.hasPotionEffect(PotionEffectType.FAST_DIGGING)){
+           return false;
+        }
+
+        if (isCooldown == false) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 120, 3));
-            cooldown = true;
+            isCooldown = true;
 
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                
+                //when the potion effect goes off.
+                isCooldown = false;
+                playerTaskManager.removePlayer(this);
 
-                @Override
-                public void run() {
-                    cooldown = false;
+                player.sendMessage(ChatColor.GOLD + "Your peppermint effect has ended.");
+            }, 20 * 100);
 
-                }
-            }, 20 * 120);
-
+            return true;
         }
-        else{
-            player.sendMessage(ChatColor.RED + "You are currently on cooldown!");
-        }
+
+        return false;
     }
 }

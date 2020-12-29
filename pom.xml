@@ -45,7 +45,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
-                    <outputDirectory>C:\Users\Riley\Desktop\server\plugins</outputDirectory>
+                    <outputDirectory>C:\Users\Riley\Desktop\dev\1.16 server\plugins</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
